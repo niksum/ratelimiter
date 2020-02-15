@@ -1,0 +1,41 @@
+ratelimit:
+    enabled: true
+    persistence: REDIS
+    mapping-map:
+      developers:
+        id: api_v1_developers
+        path: /api/v1/developers
+        url: forward:/
+      organizations:
+        id: api_v1_organizations
+        path: /api/v1/organizations
+        url: forward:/
+    default-rule:
+      - rule-limit: 5
+        refresh-after: 1
+        type:
+           - user=unknown
+    rule-map:
+      api_v1_developers:
+        - rule-limit: 3
+          refresh-after: 60
+          type:
+            - user
+            - Logging
+        - rule-limit: 3
+          refresh-after: 60
+          type:
+            - user=user2
+        - rule-limit: 2
+          refresh-after: 60
+          type:
+            - user=user2
+      api_v1_organizations:
+        - rule-limit: 10
+          refresh-after: 2
+          type:
+            - user=user1
+        - rule-limit: 20
+          refresh-after: 2
+          type:
+            - user=user2
